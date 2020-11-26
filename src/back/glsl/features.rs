@@ -6,7 +6,7 @@ use crate::{
 use std::io::Write;
 
 bitflags::bitflags! {
-    /// Structure used to encode a set of addittions to glsl that aren't supported by all versions
+    /// Structure used to encode a set of additions to glsl that aren't supported by all versions
     pub struct Features: u32 {
         /// Buffer storage class support
         const BUFFER_STORAGE = 1;
@@ -81,8 +81,8 @@ impl FeaturesManager {
         check_feature!(IMAGE_LOAD_STORE, 130, 310);
         check_feature!(CONSERVATIVE_DEPTH, 130, 300);
         check_feature!(CONSERVATIVE_DEPTH, 130, 300);
-        // 1D textures are supported by all core versions and aren't supported by an es versions
-        // so use 0 that way the check will always be false and can be optimized away
+        // 1D textures are supported by all core versions and aren't supported by any es versions,
+        // so use 0. That way the check will always be false and can be optimized away.
         check_feature!(TEXTURE_1D, 0);
 
         // Return an error if there are missing features
@@ -97,7 +97,7 @@ impl FeaturesManager {
     ///
     /// # Notes
     /// This won't check for feature availability so it might output extensions that aren't even
-    /// supported.[`check_availability`](Self::check_availability) will check feature availability
+    /// supported. [`check_availability`](Self::check_availability) will check feature availability
     pub fn write(&self, version: Version, mut out: impl Write) -> BackendResult {
         if self.0.contains(Features::COMPUTE_SHADER) && !version.is_es() {
             // https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_compute_shader.txt
@@ -172,7 +172,7 @@ impl<'a, W> Writer<'a, W> {
     /// Helper method that searches the module for all the needed [`Features`](Features)
     ///
     /// # Errors
-    /// If the version doesn't support any of the needed [`Features`](Features) a
+    /// If the version doesn't support any of the needed [`Features`](Features) an
     /// [`Error::MissingFeatures`](super::Error::MissingFeatures) will be returned
     pub(super) fn collect_required_features(&mut self) -> BackendResult {
         let stage = self.options.entry_point.0;
